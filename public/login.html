@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - 5M Clothing</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e7f4ec;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #aaa;
+      width: 350px;
+    }
+    h2 {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #8e5c95;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #000;
+    }
+    .switch {
+      text-align: center;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email" />
+    <input type="password" id="loginPassword" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <div class="switch">New user? <a href="signup.html">Sign up</a></div>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

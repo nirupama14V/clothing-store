@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login & Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background: #28a745;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #218838;
+    }
+    .toggle-link {
+      text-align: center;
+      margin-top: 10px;
+      cursor: pointer;
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Registration Form -->
+    <div id="registerForm">
+      <h2>Sign Up</h2>
+      <input type="text" id="regUsername" placeholder="Enter Username" required>
+      <input type="password" id="regPassword" placeholder="Enter Password" required>
+      <select id="regRole">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button onclick="register()">Register</button>
+      <div class="toggle-link" onclick="toggleForm('login')">Already have an account? Login</div>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginForm" style="display:none;">
+      <h2>Login</h2>
+      <input type="text" id="loginUsername" placeholder="Enter Username" required>
+      <input type="password" id="loginPassword" placeholder="Enter Password" required>
+      <button onclick="login()">Login</button>
+      <div class="toggle-link" onclick="toggleForm('register')">Don’t have an account? Sign Up</div>
+    </div>
+  </div>
+
+  <script>
+    // Save user data in localStorage
+    function register() {
+      let username = document.getElementById("regUsername").value;
+      let password = document.getElementById("regPassword").value;
+      let role = document.getElementById("regRole").value;
+
+      if(username && password) {
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        
+        // check if username already exists
+        let exists = users.find(u => u.username === username);
+        if(exists){
+          alert("Username already exists. Please choose another.");
+          return;
+        }
+
+        users.push({ username, password, role });
+        localStorage.setItem("users", JSON.stringify(users));
+        alert("Registration successful! You can now login.");
+        toggleForm('login');
+      } else {
+        alert("Please fill all fields.");
+      }
+    }
+
+    // Login function
+    function login() {
+      let username = document.getElementById("loginUsername").value;
+      let password = document.getElementById("loginPassword").value;
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+
+      let user = users.find(u => u.username === username && u.password === password);
+      if(user) {
+        alert("Login successful!");
+        if(user.role === "admin") {
+          window.location.href = "admin.html";
+        } else {
+          window.location.href = "index.html";
+        }
+      } else {
+        alert("Invalid credentials. Try again.");
+      }
+    }
+
+    // Toggle between forms
+    function toggleForm(form) {
+      if(form === "login") {
+        document.getElementById("registerForm").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
+      } else {
+        document.getElementById("registerForm").style.display = "block";
+        document.getElementById("loginForm").style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>

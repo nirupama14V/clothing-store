@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5M Clothing Brand</title>
+    <style>
+        :root {
+            --primary-color: #8e5c95;
+            --secondary-color: #e10707;
+            --accent-color: #164102;
+            --background-color: #c1e3d0;
+            --card-background: #a0d87d;
+            --border-color: #395b48;
+            --hover-color: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            line-height: 1.6;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        nav a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--accent-color);
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-icon svg {
+            color: var(--primary-color);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--accent-color);
+            color: #fff;
+            border-radius: 50%;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.75rem;
+            line-height: 1;
+        }
+
+        main {
+            padding: 2rem 5%;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart-btn {
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background-color: var(--card-background);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: right 0.4s ease;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .close-cart-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .empty-cart-message {
+            text-align: center;
+            color: var(--secondary-color);
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 1rem;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-title {
+            font-weight: 600;
+        }
+
+        .item-price {
+            color: var(--accent-color);
+        }
+
+        .remove-item-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .remove-item-btn:hover {
+            color: #c82333;
+        }
+
+        .cart-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .cart-total {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background-color: var(--hover-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+
+        <div class="logo">5M Clothing Brand</div>
+        <nav>
+            <a href="#" class="category-link active" data-category="all">All Products</a>
+            <a href="#" class="category-link" data-category="women">Women's</a>
+            <a href="#" class="category-link" data-category="accessories">Accessories</a>
+            <a href="#" class="category-link" data-category="men">Men's</a>
+            <a href="#" class="category-link" data-category="kids">Kids'</a>
+        </nav>
+        <div id="userArea"></div>
+
+        <div class="cart-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span class="cart-count">0</span>
+        </div>
+    </header>
+
+    <main>
+        <section id="product-grid" class="product-grid">
+            </section>
+    </main>
+
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="close-cart-btn">&times;</button>
+        </div>
+        <div id="cart-items" class="cart-items">
+            <p class="empty-cart-message">Your cart is empty.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">Total: ₹<span id="cart-total-price">0.00</span></div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            // Men's
+    { id: 1, name: "Men's Classic T-Shirt", category: "men", price: 550.00, image: "images/1.png" },
+    { id: 2, name: "Men's Slim Fit Jeans", category: "men", price: 700.00, image: "images/2.png" },
+    { id: 3, name: "Men's Button-Down Shirt", category: "men", price: 450.00, image: "images/3.png" },
+    { id: 4, name: "Men's Fleece Hoodie", category: "men", price: 555.00, image: "images/4.png" },
+    { id: 5, name: "Men's Bomber Jacket", category: "men", price: 850.00, image: "images/5.png" },
+    { id: 6, name: "Men's Khaki Chino Pants", category: "men", price: 600.00, image: "images/6.png" },
+    { id: 7, name: "Men's Polo Shirt", category: "men", price: 350.00, image: "images/7.png" },
+    { id: 8, name: "Men's Running Shorts", category: "men", price: 300.00, image: "images/8.png" },
+    { id: 9, name: "Men's Denim Jacket", category: "men", price: 900.00, image: "images/9.png" },
+    { id: 10, name: "Men's Knitted Sweater", category: "men", price: 650.00, image: "images/10.png" },
+
+    // Women's
+    { id: 11, name: "Women's Floral Dress", category: "women", price: 450.00, image: "images/11.png" },
+    { id: 12, name: "Women's High-Waist Jeans", category: "women", price: 650.00, image: "images/12.png" },
+    { id: 13, name: "Women's Blouse", category: "women", price: 300.00, image: "images/13.png" },
+    { id: 14, name: "Women's Cardigan", category: "women", price: 500.00, image: "images/14.png" },
+    { id: 15, name: "Women's Skirt", category: "women", price: 435.00, image: "images/15.png" },
+    { id: 16, name: "Women's Yoga Pants", category: "women", price: 400.00, image: "images/16.png" },
+    { id: 17, name: "Women's Crop Top", category: "women", price: 325.00, image: "images/17.png" },
+    { id: 18, name: "Women's Winter Coat", category: "women", price: 1220.00, image: "images/18.png" },
+    { id: 19, name: "Women's Romper", category: "women", price: 550.00, image: "images/19.png" },
+    { id: 20, name: "Women's Jumpsuit", category: "women", price: 700.00, image: "images/20.png" },
+
+    // Kids
+    { id: 21, name: "Kids' Cartoon T-Shirt", category: "kids", price: 150.00, image: "images/21.png" },
+    { id: 22, name: "Kids' Denim Overalls", category: "kids", price: 300.00, image: "images/22.png" },
+    { id: 23, name: "Kids' Hoodie Set", category: "kids", price: 400.00, image: "images/23.png" },
+    { id: 24, name: "Kids' Summer Shorts", category: "kids", price: 200.00, image: "images/24.png" },
+    { id: 25, name: "Kids' Party Dress", category: "kids", price: 500.00, image: "images/25.png" },
+    { id: 26, name: "Kids' Pajama Set", category: "kids", price: 250.00, image: "images/26.png" },
+    { id: 27, name: "Kids' Rain Jacket", category: "kids", price: 350.00, image: "images/27.png" },
+    { id: 28, name: "Kids' Jeans", category: "kids", price: 280.00, image: "images/28.png" },
+    { id: 29, name: "Kids' Sweatpants", category: "kids", price: 220.00, image: "images/29.png" },
+    { id: 30, name: "Kids' School Uniform", category: "kids", price: 600.00, image: "images/30.png" },
+
+    // Accessories
+    { id: 31, name: "Leather Belt", category: "accessories", price: 200.00, image: "images/31.png" },
+    { id: 32, name: "Fashion Sunglasses", category: "accessories", price: 150.00, image: "images/32.png" },
+    { id: 33, name: "Designer Scarf", category: "accessories", price: 300.00, image: "images/33.png" },
+    { id: 34, name: "Sports Cap", category: "accessories", price: 250.00, image: "images/34.png" },
+    { id: 35, name: "Smartwatch", category: "accessories", price: 150.00, image: "images/35.png" },
+    { id: 36, name: "Necklace", category: "accessories", price: 400.00, image: "images/36.png" },
+    { id: 37, name: "Wallet", category: "accessories", price: 229.00, image: "images/37.png" },
+    { id: 38, name: "Backpack", category: "accessories", price: 600.00, image: "images/38.png" },
+    { id: 39, name: "Earrings", category: "accessories", price: 180.00, image: "images/40.png" },
+    { id: 40, name: "Gloves", category: "accessories", price: 120.00, image: "images/39.png" },
+];
+
+        let cart = [];
+
+        const productGrid = document.getElementById('product-grid');
+        const cartSidebar = document.getElementById('cart-sidebar');
+        const cartIcon = document.querySelector('.cart-icon');
+        const closeCartBtn = document.querySelector('.close-cart-btn');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartCountSpan = document.querySelector('.cart-count');
+        const cartTotalPriceSpan = document.getElementById('cart-total-price');
+        const categoryLinks = document.querySelectorAll('.category-link');
+
+        function renderProducts(filteredProducts) {
+            productGrid.innerHTML = '';
+            if (filteredProducts.length === 0) {
+                productGrid.innerHTML = '<p style="text-align: center; width: 100%;">No products found in this category.</p>';
+            } else {
+                filteredProducts.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.classList.add('product-card');
+                    productCard.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}" class="product-image">
+                        <div class="product-info">
+                            <h3 class="product-title">${product.name}</h3>
+                            <p class="product-price">₹${product.price.toFixed(2)}</p>
+                            <button class="add-to-cart-btn" data-id="${product.id}">Add to Cart</button>
+                        </div>
+                    `;
+                    productGrid.appendChild(productCard);
+                });
+            }
+        }
+
+        function renderCart() {
+            cartItemsContainer.innerHTML = '';
+            let totalPrice = 0;
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="empty-cart-message">Your cart is empty.</p>';
+                cartCountSpan.textContent = '0';
+            } else {
+                cart.forEach(item => {
+                    const cartItem = document.createElement('div');
+                    cartItem.classList.add('cart-item');
+                    cartItem.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="item-details">
+                            <p class="item-title">${item.name}</p>
+                            <p class="item-price">₹${item.price.toFixed(2)}</p>
+                        </div>
+                        <button class="remove-item-btn" data-id="${item.id}">&times;</button>
+                    `;
+                    cartItemsContainer.appendChild(cartItem);
+                    totalPrice += item.price;
+                });
+                cartCountSpan.textContent = cart.length;
+            }
+            cartTotalPriceSpan.textContent = totalPrice.toFixed(2);
+        }
+
+        categoryLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const category = e.target.dataset.category;
+                categoryLinks.forEach(l => l.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                let filteredProducts = (category === 'all') ? products : products.filter(product => product.category === category);
+                renderProducts(filteredProducts);
+            });
+        });
+
+        productGrid.addEventListener('click', (e) => {
+            if (e.target.classList.contains('add-to-cart-btn')) {
+                const productId = parseInt(e.target.dataset.id);
+                const productToAdd = products.find(p => p.id === productId);
+                if (productToAdd) {
+                    cart.push(productToAdd);
+                    renderCart();
+                    cartSidebar.classList.add('open');
+                }
+            }
+        });
+
+        cartItemsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-item-btn')) {
+                const productId = parseInt(e.target.dataset.id);
+                const itemIndex = cart.findIndex(item => item.id === productId);
+                if (itemIndex > -1) {
+                    cart.splice(itemIndex, 1);
+                    renderCart();
+                }
+            }
+        });
+
+        cartIcon.addEventListener('click', () => {
+            cartSidebar.classList.toggle('open');
+        });
+
+        closeCartBtn.addEventListener('click', () => {
+            cartSidebar.classList.remove('open');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts(products);
+            renderCart();
+        });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+    const savedProducts = JSON.parse(localStorage.getItem("products"));
+    renderProducts(savedProducts || products);
+    renderCart();
+});
+const userArea = document.getElementById("userArea");
+const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+if (user) {
+    userArea.innerHTML = `Welcome, ${user.name}! <button onclick="logout()">Logout</button>`;
+} else {
+    userArea.innerHTML = `<a href="login.html">Login</a>`;
+}
+
+function logout() {
+    localStorage.removeItem("loggedInUser");
+    location.reload();
+}
+    </script>
+</body>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAhXW1OSwn76t2Iw0Tk6o5WlS5BHJMipxI",
+    authDomain: "fivem-brand.firebaseapp.com",
+    projectId: "fivem-brand",
+    storageBucket: "fivem-brand.firebasestorage.app",
+    messagingSenderId: "528418805610",
+    appId: "1:528418805610:web:321e7225f07b0718d0f713",
+    measurementId: "G-C5Z4FPMJ4J"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+</html>
